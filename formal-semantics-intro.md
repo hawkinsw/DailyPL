@@ -1,10 +1,8 @@
 ## What's News
 
-TODO
+Last night in Washington, DC this year's winners of the [International Obfuscated C Code Contest](https://www.ioccc.org/)were hosted by the current administration and treated to a formal dinner in the White House. During the dinner, the winners reached a historic pact with the Recognizing Testing Functions Matters (RTFM) Union by agreeing to stop torturing their compilers in exchange for a break on having to write so many unit tests.
 
-This is an issue of the Daily PL that you are going to want to make sure that you keep safe -- definitely worth framing and passing on to your children! You will want to make sure you remember where you were when you first learned about ...
-
-### Formal Program Semantics
+## Formal Program Semantics
 
 Formally specifying the syntax of a programming language can only take us so far along the path of understanding the meaning of a program. Regular expressions, tokenizers, lexemes, context-free grammars, and parsers are the tools at our disposal for learning about a program's syntax. Unfortunately, when we limit ourselves to analyzing a program in terms of a context-free grammar there are certain aspects of a program that we _should_ be able to analyze statically that we cannot (because, well, they require context to analyze). So, we extended our discussion of syntax formalisms by discussing _static semantics_. That may seem like an oxymoron -- determining the meaning of a statement by looking only at the _syntax_ (the _very_ thing that _only_ specifies the _form_ of a valid program)? Nevertheless, it's possible (to an extent) using _attribute grammars_.
 
@@ -17,7 +15,7 @@ The goal of defining formal program semantics is to understand and reason about 
 
 The alternative to formal program semantics are _standards_ promulgated by committees that use natural language to define the meaning of program elements. Here is an example of a page from the standard for the C programming language:
 
-![Screenshot from 2021-09-19 22-26-25.png](https://uc.instructure.com/courses/1625778/files/169035017/preview)
+![](./graphics/CSpecificationSemantics.png)
 
 If you are interested, you can find the [C++ language standard](https://isocpp.org/std/the-standard), the [Java language standard](https://docs.oracle.com/javase/specs/), the [C language standard](http://www.open-std.org/jtc1/sc22/wg14/), the [Go language standard](https://golang.org/ref/spec) and the [Python language standard](https://docs.python.org/3/reference/) all online.
 
