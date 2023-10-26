@@ -74,23 +74,23 @@ $$
 The conclusion is generally written like
 
 $$
-<e, \sigma> \longrightarrow <v, \tau, \sigma'>
+\langle e, \sigma  \rangle \longrightarrow \langle v, \tau, \sigma'  \rangle
 $$
 
-This statement is the _evaluation relation_ of a rule. The rule defines that, when the premises hold, the program configuration $<e,\sigma>$ evaluates to a value ($v$), type ($\tau$) and (possibly modified) state ($\sigma'$)  after a single step of evaluation. Note that rules _do not_ yield configurations. All this will make sense when we see an example.
+This statement is the _evaluation relation_ of a rule. The rule defines that, when the premises hold, the program configuration $\langle e,\sigma  \rangle$ evaluates to a value ($v$), type ($\tau$) and (possibly modified) state ($\sigma'$)  after a single step of evaluation. Note that rules _do not_ yield configurations. All this will make sense when we see an example.
 
 **Example 1: _Defining the semantics of variable access._**
 
 In STIMPL, the expression to access a variable, say _i_, is written like `Variable("i")`. Our operational semantics rule for _evaluating_ such an access should "read" something like: 
 
-> When the program is about to execute an expression to access variable $i$ in a state $\tau$, the value of the expression will be the triple of $i$'s value and type (in the current state) and that state $\sigma$, unchanged.
+ \rangle When the program is about to execute an expression to access variable $i$ in a state $\tau$, the value of the expression will be the triple of $i$'s value and type (in the current state) and that state $\sigma$, unchanged.
 
 In other words, without disturbing the program's current state, the evaluation of the next step of a program that is about to access a value is the value and type of the variable being accessed. To reiterate, accessing a variable _does not_ change the value of the program's state.
 
 Let's write that formally!
 
 $$
-\frac{\sigma(x)\longrightarrow(v,\tau)}{<Variable(x),\sigma>\longrightarrow(v,\tau,\sigma)}
+\frac{\sigma(x)\longrightarrow(v,\tau)}{\langle Variable(x),\sigma \rangle\longrightarrow(v,\tau,\sigma)}
 $$
 
 What, exactly, does this mean? Let's look at the premises. The premises are (partly) responsible for determining whether a rule defines the semantics of a program's step.
@@ -117,30 +117,30 @@ $$
 
 This function definition means that if you are querying the updated state for the variable that was just reassigned ($x$), then return its new value and type ($m$ and $\tau$). Otherwise, just return the value that you would get from accessing the existing state of the program _before_ the update! 
 
-> Note: Can you see now why we are implementing the state function in the "odd" way that we described in class? The code that we wrote in Python is almost _exactly_ what the mathematical function (above) specifies! Prove it to yourself!
+ \rangle Note: Can you see now why we are implementing the state function in the "odd" way that we described in class? The code that we wrote in Python is almost _exactly_ what the mathematical function (above) specifies! Prove it to yourself!
 
 **Example 2: _Defining the semantics of variable assignment (for a variable that already exists)._**
 
 In STIMPL, the expression to overwrite the value of an existing variable, say _i_, with, say, an integer literal 5 is written like `Assign(Variable("i"), IntLiteral(5))`. Our operational semantic rule for _evaluating_ such an assignment should "read" something like: 
 
-> When the program is about to execute an expression to assign variable _i_ to the integer literal 5 in a state $\sigma$ and the type of the variable _i_ in state $\sigma$ is $Integer$, the value of the expression will be the triple of $5, Integer$ and the changed state $\sigma'$ which is exactly the same as state $s\sigma$  except where $(5, Integer)$ replaced _i_'s earlier contents."
+ \rangle When the program is about to execute an expression to assign variable _i_ to the integer literal 5 in a state $\sigma$ and the type of the variable _i_ in state $\sigma$ is $Integer$, the value of the expression will be the triple of $5, Integer$ and the changed state $\sigma'$ which is exactly the same as state $s\sigma$  except where $(5, Integer)$ replaced _i_'s earlier contents."
 
 That's such a mouthful! But, I think we got it. Let's replace some of those literals with symbols for abstraction purposes and then write it down!
 
 $$
-\frac{<e,\sigma>\longrightarrow\left(v,\tau,\sigma'\right),\sigma'\left(x\right)\longrightarrow\left(*,\tau\right)}{<Assign\left(Variable\left(x\right),e\right),\sigma>\longrightarrow\left(v,\tau,\sigma'\left[\left(v,\tau\right)/x\right]\right)}
+\frac{\langle e,\sigma \rangle\longrightarrow\left(v,\tau,\sigma'\right),\sigma'\left(x\right)\longrightarrow\left(*,\tau\right)}{\langle Assign\left(Variable\left(x\right),e\right),\sigma \rangle\longrightarrow\left(v,\tau,\sigma'\left[\left(v,\tau\right)/x\right]\right)}
 $$
 
 Let's look at it step-by-step:
 
 $$
-<Assign(Variable(x), e), \sigma>
+\langle Assign(Variable(x), e), \sigma \rangle
 $$
 
 is the configuration and means that we are about to execute an expression that will assign the value of expression _e_ to variable _x_. But what is the value of expression _e?_ The premise
 
 $$
-<e, \sigma> \longrightarrow (v, \tau,\sigma')
+\langle e, \sigma \rangle \longrightarrow (v, \tau,\sigma')
 $$
 
 tells us that this rule only applies when the value and type of _e_ when evaluated in state $\sigma$ is $v$, and $\tau$. Moreover, the premise tells us that the rule only applies when the state may have changed during evaluation of expression _e_ and that subsequent evaluation should use a new state, $\sigma'$. Our mouthful above had another important caveat: the type of the value to be assigned to variable _x_ must match the type of the value already stored in variable _x_. The second premise
@@ -164,7 +164,7 @@ You did it!!
 Well, Will, that's fine and good and all that stuff. But, how do I _use_ this when I am implementing STIMPL? I'll show you! Remember the operational semantics for variable access:
 
 $$
-\frac{\sigma(x)\longrightarrow(v,\tau)}{<Variable(x),\sigma>\longrightarrow(v,\tau,\sigma)}
+\frac{\sigma(x)\longrightarrow(v,\tau)}{\langle Variable(x),\sigma \rangle\longrightarrow(v,\tau,\sigma)}
 $$
 
 Compare that with the code for it's implementation in the STIMPL skeleton that you are provided for Assignment 2:
@@ -193,7 +193,7 @@ yields the final result! Pretty cool, right?
 Let's do the same analysis for assignment:
 
 $$
-\frac{<e,\sigma>\longrightarrow\left(v,\tau,\sigma'\right),\sigma'\left(x\right)\longrightarrow\left(*,\tau\right)}{<Assign\left(Variable\left(x\right),e\right),\sigma>\longrightarrow\left(v,\tau,\sigma'\left[\left(v,\tau\right)/x\right]\right)}
+\frac{\langle e,\sigma \rangle\longrightarrow\left(v,\tau,\sigma'\right),\sigma'\left(x\right)\longrightarrow\left(*,\tau\right)}{\langle Assign\left(Variable\left(x\right),e\right),\sigma \rangle\longrightarrow\left(v,\tau,\sigma'\left[\left(v,\tau\right)/x\right]\right)}
 $$
 
 And here's the implementation:
