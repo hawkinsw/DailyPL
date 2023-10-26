@@ -47,7 +47,9 @@ At all times, a program has a state. A state is just a function whose domain is 
 
 The state of a program is abbreviated with the $\sigma$. Again, $\sigma$ is just a function, so we can _call_ it:
 
-$\sigma(x) = (v, \tau)$
+$$
+\sigma(x) = (v, \tau)
+$$
 
 you can read the definition above as "Variable _x_ has value $v$ and type $\tau$ in state $\sigma$. $\tau$ always represents some arbitrary variable type. Generally, $v$ represents a value.
 
@@ -55,7 +57,9 @@ you can read the definition above as "Variable _x_ has value $v$ and type $\tau$
 
 Between execution _steps_ (a term that we will define shortly), a program is always in a particular _configuration_:
 
-$<e,\sigma>$
+$$
+<e,\sigma>
+$$
 
 This means that the program in state $\sigma$ is _about to_ evaluate expression $e$. Note well that the configuration describes the expression that is next to be evaluated -- it has not yet been evaluated. You can think of it like the debugger stopped on a particular statement/expression -- that will be the _next_ thing to execute.
 
@@ -63,11 +67,15 @@ This means that the program in state $\sigma$ is _about to_ evaluate expression 
 
 A program step is an atomic (indivisible) change from one program configuration to another. Operational semantics defines steps using rules. The general form of a rule is
 
-$\frac{premises}{conclusion}$
+$$
+\frac{premises}{conclusion}
+$$
 
 The conclusion is generally written like
 
-$<e, \sigma> \longrightarrow <v, \tau, \sigma'>$
+$$
+<e, \sigma> \longrightarrow <v, \tau, \sigma'>
+$$
 
 This statement is the _evaluation relation_ of a rule. The rule defines that, when the premises hold, the program configuration $<e,\sigma>$ evaluates to a value ($v$), type ($\tau$) and (possibly modified) state ($\sigma'$)  after a single step of evaluation. Note that rules _do not_ yield configurations. All this will make sense when we see an example.
 
@@ -81,7 +89,9 @@ In other words, without disturbing the program's current state, the evaluation o
 
 Let's write that formally!
 
-$\frac{\sigma(x)\longrightarrow(v,\tau)}{<Variable(x),\sigma>\longrightarrow(v,\tau,\sigma)}$
+$$
+\frac{\sigma(x)\longrightarrow(v,\tau)}{<Variable(x),\sigma>\longrightarrow(v,\tau,\sigma)}
+$$
 
 What, exactly, does this mean? Let's look at the premises. The premises are (partly) responsible for determining whether a rule defines the semantics of a program's step.
 
@@ -98,10 +108,12 @@ Why are we able to carry the existing state across the program step? Because sim
 How do we write down a change to the state? Why would we want to change the state? Let's answer the second question first: we want to change the state when, for example, there is an assignment statement. If $\sigma(i)= (4, Integer)$ and then the program evaluated an expression like `Assign(Variable("i"), IntLiteral(2))`, we don't want the $\sigma$ to return $(4, Integer)$ any more! We want it to return $(2, Integer)$. We can define that mathematically like:
 
 
-$\sigma \lbrack (v,\tau) / x \rbrack(y) = \begin{cases}
+$$
+\sigma \lbrack (v,\tau) / x \rbrack(y) = \begin{cases}
 \sigma (y) &  y \ne x \\
 (v, \tau) & y = x
-\end{cases}$
+\end{cases}
+$$
 
 This function definition means that if you are querying the updated state for the variable that was just reassigned ($x$), then return its new value and type ($m$ and $\tau$). Otherwise, just return the value that you would get from accessing the existing state of the program _before_ the update! 
 
@@ -115,25 +127,35 @@ In STIMPL, the expression to overwrite the value of an existing variable, say _i
 
 That's such a mouthful! But, I think we got it. Let's replace some of those literals with symbols for abstraction purposes and then write it down!
 
-$\frac{<e,\sigma>\longrightarrow\left(v,\tau,\sigma'\right),\sigma'\left(x\right)\longrightarrow\left(*,\tau\right)}{<Assign\left(Variable\left(x\right),e\right),\sigma>\longrightarrow\left(v,\tau,\sigma'\left[\left(v,\tau\right)/x\right]\right)}$
+$$
+\frac{<e,\sigma>\longrightarrow\left(v,\tau,\sigma'\right),\sigma'\left(x\right)\longrightarrow\left(*,\tau\right)}{<Assign\left(Variable\left(x\right),e\right),\sigma>\longrightarrow\left(v,\tau,\sigma'\left[\left(v,\tau\right)/x\right]\right)}
+$$
 
 Let's look at it step-by-step:
 
-$<Assign(Variable(x), e), \sigma>$
+$$
+<Assign(Variable(x), e), \sigma>
+$$
 
 is the configuration and means that we are about to execute an expression that will assign the value of expression _e_ to variable _x_. But what is the value of expression _e?_ The premise
 
-$<e, \sigma> \longrightarrow (v, \tau,\sigma')$
+$$
+<e, \sigma> \longrightarrow (v, \tau,\sigma')
+$$
 
 tells us that this rule only applies when the value and type of _e_ when evaluated in state $\sigma$ is $v$, and $\tau$. Moreover, the premise tells us that the rule only applies when the state may have changed during evaluation of expression _e_ and that subsequent evaluation should use a new state, $\sigma'$. Our mouthful above had another important caveat: the type of the value to be assigned to variable _x_ must match the type of the value already stored in variable _x_. The second premise
 
-$\sigma'(x) \longrightarrow (*, \tau)$
+$$
+\sigma'(x) \longrightarrow (*, \tau)
+$$
 
 tells us that the type of the expression's value and the type of variable _i_ match -- see how the $\tau$s are the same in the two premises? (We use the $*$ to indicate that the applicability of this rule is not predicated on the variable's value, just its type!).
 
 Now we can just put together everything we have and say that the expression assigning the value of expression _e_ to variable _x_ evaluates to
 
-$(v,\tau,\sigma'[v,\tau)/x])$
+$$
+(v,\tau,\sigma'[v,\tau)/x])
+$$
 
 You did it!!
 
@@ -141,7 +163,9 @@ You did it!!
 
 Well, Will, that's fine and good and all that stuff. But, how do I _use_ this when I am implementing STIMPL? I'll show you! Remember the operational semantics for variable access:
 
-$\frac{\sigma(x)\longrightarrow(v,\tau)}{<Variable(x),\sigma>\longrightarrow(v,\tau,\sigma)}$
+$$
+\frac{\sigma(x)\longrightarrow(v,\tau)}{<Variable(x),\sigma>\longrightarrow(v,\tau,\sigma)}
+$$
 
 Compare that with the code for it's implementation in the STIMPL skeleton that you are provided for Assignment 2:
 
@@ -158,7 +182,7 @@ def evaluate(expression, state):
 At this point in the code we are in a function named `evaluate` whose first parameter is the next expression to evaluate and whose second parameter is a state. Does that sound familiar? That's because it's the same as a _configuration_! We use _pattern matching_ to select the code to execute. The pattern is based on the structure of the `expression` variable and we match in the code above when `expression` is a variable access. Refer to [Pattern Matching in Python](TODO) for the exact form of the syntax. The `state` variable is an instance of the `State` object that provides a method called `get_value` (see [Assignment 2: Implementing STIMPL](TODO) for more information about that function) that returns a tuple of $(v, \tau)$. In other words, `get_value` works the same as $\sigma$. So,
 
 ```Python
-value = state.get_value(variable_name)
+      value = state.get_value(variable_name)
 ```
 is a means of carrying out the premise of the operational semantics.
 ```Python
@@ -168,7 +192,10 @@ yields the final result! Pretty cool, right?
 
 Let's do the same analysis for assignment:
 
-$\frac{<e,\sigma>\longrightarrow\left(v,\tau,\sigma'\right),\sigma'\left(x\right)\longrightarrow\left(*,\tau\right)}{<Assign\left(Variable\left(x\right),e\right),\sigma>\longrightarrow\left(v,\tau,\sigma'\left[\left(v,\tau\right)/x\right]\right)}$
+$$
+\frac{<e,\sigma>\longrightarrow\left(v,\tau,\sigma'\right),\sigma'\left(x\right)\longrightarrow\left(*,\tau\right)}{<Assign\left(Variable\left(x\right),e\right),\sigma>\longrightarrow\left(v,\tau,\sigma'\left[\left(v,\tau\right)/x\right]\right)}
+$$
+
 And here's the implementation:
 
 ```Python
