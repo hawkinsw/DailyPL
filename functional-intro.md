@@ -56,9 +56,7 @@ For instance,
 (car (1 2 3))  
 ```
 
-```lisp
 is `1`.
-```
 
 ```lisp
 (cdr (1 2 3))
