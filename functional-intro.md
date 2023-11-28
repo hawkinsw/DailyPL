@@ -2,7 +2,7 @@
 
 As we said at the beginning of the semester when we were learning about programming paradigms, FP is very different than imperative programming. In imperative programming, developers tell the computer how to do the operation. While functional programming is _not_ logic programming (where developers just tell the computer _what_ to compute and leave the _how_ entirely to the language implementation), the writer of a program in a functional PL is much more concerned with specifying what to compute than how to compute it.
 
-![Programming Language What_How Continuum.png](./graphics/Programming-Language-What-How-Continuum.png)
+![](./graphics/Programming-Language-What-How-Continuum.png)
 
 ### Four Characteristics of Pure, Strongly-Typed Functional Programming
 
@@ -32,7 +32,7 @@ Lists are a fundamental data type in functional programming languages. Powerful 
 
 The first functional programming language was developed in the mid-1950s by [John McCarthy](https://en.wikipedia.org/wiki/John_McCarthy_(computer_scientist)). At the time, computing was most associated with mathematical calculations. McCarthy was instead focused on artificial intelligence which involved symbolic computing. Computer scientists thought that it was possible to represent cognitive processes as lists of symbols. A language that made it possible to process those lists would allow developers to build systems that work like our brains, or so they thought.
 
-![John McCarthy](./graphics/johnmccarthy.jpg)
+![](./graphics/johnmccarthy.jpg)
 
 McCarthy started with the goal of writing a system of meta notation that programmers could attach to Fortran. These meta notations would be reduced to actual Fortran programs, he thought. As they did their work, they found their way to a program representation built entirely of lists (and lists of lists, and lists of lists of lists, etc.). Their thinking resulted in the development of Lisp, a *lis*t *p*rocessing language. In Lisp, both data and programs are lists. McCarthy and his team showed that list processing, the basis of the semantics of Lisp, is capable of universal computing. In other words, Lisp, and other list processing languages, is/are Turing complete.
 
