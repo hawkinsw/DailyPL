@@ -1,14 +1,16 @@
 ## What's News
 
+A company specializing in finding actors to portray programmers in movies and on TV had a successful IPO today. Type Casting's shares rose 35% in their first day on the market.
+
 ## Just My Type
 
-Although engaging in a discussion about the importance of types in a programming language with PL researchers and afficianados is sure to lead to a heated conversation, there is nothing controversial about variables having an associated type, _per se_. With the advent of modern high-level languages (historians believe that types were first introduced in programming languages [in a way that would be recognizable to the modern programmer] in either Zuse's Plankalkul or Fortran 1), programmers gained the ability to specify, with precision, the valid values that a variable could hold and the valid operations a programmer could perform on those values. In other words, the programmer gained the power to specify the type of a variable.
+Although engaging in a discussion about the importance of types in a programming language with PL researchers and afficianados is sure to lead to a heated conversation, there is nothing controversial about variables having an associated type, _per se_. With the advent of modern high-level languages (In an academic article about the history of early programming languages, Don Knuth wrote that Zuse's Plankalkul was one of the first languages whose variables had associated types -- at least in a way that would be recognizable to us!), programmers gained the ability to specify, with precision, the valid values that a variable could hold and the valid operations a programmer could perform on those values. In other words, the programmer gained the power to specify the type of a variable.
 
 Furthermore, just to be sure that _type_ doesn't run off on an ego trip, it is important to remember that the association between type and variable is a _binding_ just like the 5 other attribute-entity bindings that apply to variables. Given that a variable's type is just one of the variable's bindings, then we can conclude that the time those bindings are made can be differentiated depending on whether the association is made statically or dynamically.
 
 ## Statically Typed Language
 
-A statically typed programming language is one whose variable-type association is made before the program executes and the association does not change throughout the entirety of program execution. That should not be a surprising statement given what we know about "the first 5" binding times.
+In a statically typed programming language, the variable-type binding is made before the program executes and does not change throughout the entirety of program execution. That should not be a surprising statement given what we know about "the first 5" binding times and the definition of _static binding_s.
 
 Common examples of statically typed programming languages are C++, Rust, Go, and Java.
 
@@ -16,13 +18,13 @@ Common examples of statically typed programming languages are C++, Rust, Go, and
 
 On the other end of the spectrum are dynamically typed programming languages. A dynamically typed programming language is one whose variable-type association is made at runtime _or_ is made before runtime and may change throughout the program execution. Again, that statement should make sense given what we know about binding times.
 
-Common examples of dynamically typed programming languages are Python Ruby, and JavaScript.
+Common examples of dynamically typed programming languages are Python, Ruby, and JavaScript.
 
 ## Associating Types With Variables
 
 Whether variables are given types statically or dynamically, every language has a process of making that association. The associations between type and variable can be made _explicitly_ or _implicitly_.
 
-> Note: With the just-introduced addition of the difference between implicitly and explicitly typed programming languages, our map has four quadrants. On one axis is static/dynamic and on the other axis are explicit and implicit. Therefore, it is possible to have an explicitly statically typed language or an implicitly dynamically typed language or even some other combination. In the future we will add another axis to the schema according to how strongly or weakly typed variables are in a given programming language!
+> Note: With the just-introduced addition of the difference between implicitly and explicitly typed programming languages, we can create a chart with four quadrants to categorize languages with respect to their use of types: On one axis is static/dynamic and on the other axis is explicit/implicit. Therefore, it is possible to have an explicitly statically typed language or an implicitly dynamically typed language or even some other combination. In the future we will add another axis to the schema according to how strongly or weakly typed variables are in a given programming language!
 
 ### Explicit
 
@@ -41,7 +43,7 @@ Notice how for each of the three variables we had to explicitly label the types.
 
 ### Implicit
 
-If we are following best practices and always initializing our variables, then we are already giving the compiler an example of one of the valid values of a particular type to assign to a variable. Why do we need to repeat ourselves to the language (either the compiler or the interpreter). 
+If we are following best practices and always initializing our variables, then we are already giving the compiler an example of one of the valid values of a particular type to assign to a variable. If that initial value can be a member of the set of valid values of only one of the language's types, why do we need to repeat ourselves to the language (either the compiler or the interpreter)? 
 
 #### Inference
 In some implicitly typed programming languages, the types are _inferred_ from the code and we don't have to repeat ourselves! Consider this snippet of Go:
@@ -86,7 +88,29 @@ if __name__ == "__main__":
 
 The type of `pine` is inferred from the type of the expression used to update its value. The first assignment to `pine` not only changes the value of `pine` but it also changes the type (to `Address`). The second assignment does something similar: it changes the value of `pine` and the type (to `BinaryTree`).
 
-> Note: You can use the built-in function named `type` in Python to determine the type of a variable when the program is executing.
+> Note: You can use the built-in function named `type` in Python to determine the type of a variable when the program is executing. For instance,
+>
+
+```Python
+from bintrees import BinaryTree
+
+class Address():
+    def __init__(self, street: str):
+        self.__street = street
+
+if __name__ == "__main__":
+    pine = Address("349 Pine Dr.")
+    print(f"I live at {type(pine)}")
+    pine = BinaryTree()
+    print(f"I climb {type(pine)}-s")
+    print("")
+```
+> will print
+
+```
+I live at <class '__main__.Address'>
+I climb <class 'bintrees.bintree.BinaryTree'>-s
+```
 
 #### By Convention
 
@@ -110,7 +134,7 @@ if (fHappy == true) {
 
 The `f` prepended to `Happy` is Hungarian Notation for a _flag_ variable and the `sz` prepended to the `Location` variable stands for a _string_. 
 
-Later in the program, if an intrepid developer thought that the location variable was designed to hold GPS coordinates, they might write the following assignment statement:
+When a programmer is working in a code base that uses Hungarian Notation and thought that the location variable was designed to hold GPS coordinates, they might write the following assignment statement:
 
 ```JavaScript
 szLocation = { 'latitude': 84, 'longitude': 51 }
