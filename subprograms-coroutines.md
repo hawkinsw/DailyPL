@@ -1,6 +1,6 @@
 ## What's News
 
-A large private-equity investor has agreed to purchase the Subprogram fast-food chain from its founders, Developer Associates,for almost $10 billion. The new owner wants to add 23,000 restaurant's to the current 37,000 locations.
+A large private-equity investor has agreed to purchase the Subprogram fast-food chain from its founders, Developer Associates,for almost $10 billion. The new owner wants to add 23,000 restaurant's to the chain's 37,000 existing locations.
 
 ## Introduction
 A _subprogram_ is a type of abstraction. It is _process abstraction_ where the _how_ of a process is hidden from the user who concerns themselves only with the _what_. A _subprogram_ provides process abstraction by naming a collection of statements that define parameterized computations.​ Again, the collection of statements determines how the process is implemented. _Subprogram_ _parameters_ give the user the ability to control the way that the process executes. There are three types of subprograms:
@@ -9,17 +9,52 @@ A _subprogram_ is a type of abstraction. It is _process abstraction_ where the _
 2.  Function: A subprogram that _does_ return a value.
 3.  Method: A subprogram that operates with an implicit association to an object; a method may or may not return a value.
 
-Pay close attention to the book's explanation and definitions of terms like _parameter,_ _parameter profile_, _argument,_ _protocol_, _definition_, and _declaration_.
-
 Subprograms are characterized by three facts:
 
 1.  A subprogram has only one entry point
 2.  Only one subprogram is active at any time
 3.  Program execution returns to the caller upon completion
 
+Pay close attention to the book's explanation and definitions of terms like _parameter_, _parameter profile_, _argument_, _protocol_, _definition_, and _declaration_.
+
+In order to specify a subprogram that another programmer can _call_ (or _invoke_), we will need to specify any actions that will be performed upon invocation (the _body_) and all the ways that the caller can customize its behavior (the _parameters_). For instance, if we wanted to declare a function that will give the caller the power to change the climate in their house, we could specify a function with syntax like this
+
+```JavaScript
+function set_climate_control(ac_on, temperature) {
+  if (ac_on) {
+    enable_ac()
+  } else {
+    disable_ac()
+  }
+  house_temperature = temperature
+}
+```
+In the _subprogram header_ we 1) specify _that_ the code we are writing denotes a subprogram (here the `function` keyword serves that purpose); 2) list the parameters to the function (here `ac_on` and `temperature`) and (optionally) 3) specify the name of that subprogram (`set_climate_control` here).
+
+The _parameter profile_ of a subprogram is the number and types of parameters for a subprogram. If that subprogram is a function, then there is also something known as the _protocol_ of the subprogram that is comprised of the parameter profile and the type of the return value.
+
+> Note: If all of this sounds like a function's _signature_, it should! That said, languages that use the term signature use it very precisely. There are nine definitions of the term signature in the most recent C++ standard (the closest one to _subprogram header_ is "name, parameter-type-list, and enclosing namespace"). In Python, _signature_ is defined very specifically, too: [a list consisting of parameters and the return type](https://docs.python.org/3/library/inspect.html#inspect.Signature). In Java, the definition of signature is very close to _parameter profile_: Two methods [...], M and N, have the same signature if they have the same name, the same type parameters (if any), and, [...] the same formal parameter types.
+
+Notice that we have not yet made any reference to the fact that a subprogram _must_ have a name! That's really interesting. How can a subprogram be _anonymous_? Refer to the Functional Foundation where we talk about programming languages that use functions as first-class values for a hint!
+
 ## Calling a Subprogram: Matching Parameters with Arguments
 
-There is a difference between (formal) parameters and actual parameters (also know as arguments). (Formal) parameters belong with the function definition (or the declaration, protocol). They give names to variables that the function implementation can use to refer to values that the user specifies at the time that the function is called. Those values (specified by the user) are called the arguments. The number, type and order of arguments must (sometimes) match the number, type and order of the parameters. In most cases, order is used to match the arguments to the parameters. The first parameter is matched to the first argument, and so on. Arguments that are matched with parameters in this way are known as _positional arguments_. Once the arguments are matched to the parameters, their types are confirmed to match. Matching arguments to parameters by their position implies that there are the same number of arguments and parameters.
+There is a difference between (formal) parameters and actual parameters (also known as arguments). (Formal) parameters belong with the function definition (or the declaration, subprogram header). They give names to variables that the function implementation can use to refer to values that the user specifies at the time that the function is called. Those values specified by the user are called the arguments. The number, type and order of arguments must (sometimes) match the number, type and order of the parameters. In most cases, order is used to match the arguments to the parameters. The first parameter is matched to the first argument, and so on. 
+
+
+```JavaScript
+function coffee_order(size, splendas, pumps) {
+  // We will do some barista work here.
+}
+...
+
+
+cofee_order(16, 4, 2)
+```
+
+The code above is a snippet from JavaScript where (in most cases) the arguments (a.k.a. actual parameters) to a function are matched with the (formal) parameters by their position in the left-to-right list. In the call in the JS snippet above, we are going to get a nice 16oz coffee with 4 Splendas and two pumps of flavor!
+
+Arguments that are matched with parameters in this way are known as _positional arguments_. Once the arguments are matched to the parameters, their types are confirmed to match. Matching arguments to parameters by their position implies that there are the same number of arguments and parameters.
 
 So, why the caveat?
 
@@ -48,9 +83,9 @@ There are myriad ways that the choice of implementation methods for parameter pa
 _Polymorphism_ allows subprograms to take different types of parameters on different invocations. There are two types of polymorphism:
 
 1.  _ad-hoc polymorphism:_ A type of polymorphism where the semantics of the function may change depending on the parameter types.
-2.  _parametric polymorphism_: A type of polymorphism where subprograms take an implicit/explicit type parameter used to define the types of their subprogram's parameters; no matter the value of the type parameter, in parametric polymorphism the subprogram's semantics are always the same.​
+2.  _parametric polymorphism_: A type of polymorphism where subprograms take an implicit/explicit type parameter used to define the types of their subprogram's parameters; no matter the value of the type parameter, in parametric polymorphism, the subprogram's semantics are always the same.​
 
-Ad-hoc polymorphism is sometimes call function overloading (C++). Subprograms that participate in ad-hoc polymorphism share the same name but must have different protocols. If the subprograms' protocols and names were the same, how would the compiler/interpreter choose which one to invoke? Although a subprogram's protocol includes its return type, not all languages allow ad-hoc polymorphism to depend on the return type (e.g., C++). See the various definitions of `add` in the C++ code here: [https://github.com/hawkinsw/cs3003/blob/main/subprograms/subprograms.cpp](https://github.com/hawkinsw/cs3003/blob/main/subprograms/subprograms.cpp). Note how they all have different protocols. Further, note that not all the versions of the function `add` perform an actual addition! That's the point of _ad-hoc polymorphism_ -- the programmer can change the meaning of a function.
+Ad-hoc polymorphism is sometimes called function overloading (C++). Subprograms that participate in ad-hoc polymorphism share the same name but must have different protocols. If the subprograms' protocols and names were the same, how would the compiler/interpreter choose which one to invoke? Although a subprogram's protocol includes its return type, not all languages allow ad-hoc polymorphism to depend on the return type (e.g., C++). See the various definitions of `add` in the C++ code here: [https://github.com/hawkinsw/cs3003/blob/main/subprograms/subprograms.cpp](https://github.com/hawkinsw/cs3003/blob/main/subprograms/subprograms.cpp). Note how they all have different protocols. Further, note that not all the versions of the function `add` perform an actual addition! That's the point of _ad-hoc polymorphism_ -- the programmer can change the meaning of a function.
 
 Functions that are parametrically polymorphic are sometimes called function templates (C++) or generics (Java, Go, Rust). A parametrically polymorphic function is like the blueprint for a house with a variable number of floors. A home buyer may want a home with three stories -- the architect takes their variably floored house blueprint and "stamps out" a version with three floors. Languages variously call the process _instantiating_ a parametrically polymorphic function. Others call it [monomorphization](https://en.wikipedia.org/wiki/Monomorphization).
 
@@ -119,6 +154,8 @@ Just when you thought that you were getting the hang of subprograms, a new kid s
 2.  full control over execution until they yield
 3.  the property that only one is active at a time (although many may be dormant)
 
-Coroutines could be used to write a card game. Each player is a coroutine that knows about the player to their left (that is, another coroutine). The PlayerA coroutine performs their actions (perhaps drawing a card from the deck, etc) and checks to see if they won. If they did not win, then the PlayerA coroutine yields to the PlayerB coroutine who performs the same set of actions. This process continues until a player no longer has someone to their left. At that point, everything unwinds back to the point where PlayerA was last resumed -- the signal that a round is complete. The process continues by resuming PlayerA to start another round of the game. Because each player is a coroutine, it never ceases to exist and, therefore, retains information about previous draws from the deck. When a player finally wins, the process completes. To see this in code, check out [https://github.com/hawkinsw/cs3003/blob/main/subprograms/cardgame.py](https://github.com/hawkinsw/cs3003/blob/main/subprograms/cardgame.py).
+Coroutines could be used to write a card game. 
 
-Can you see anything similar between objects in an object-oriented programming language and coroutines? Both can store information (state) private to themselves and separate from others (as local variables and member variables, respectively) as long as they are in existence. Both can be assigned to variables and moved -- maybe they really aren't all that different at all!
+We could architecture such a game using coroutines by giving each player a coroutine. That coroutine knows about the player to their left (that is, another coroutine). The `PlayerA` coroutine performs their actions (perhaps drawing a card from the deck, etc) and checks to see if they won. If they did not win, then the `PlayerA` coroutine yields to the `PlayerB` coroutine who performs the same set of actions. This process continues until a player no longer has someone to their left. At that point, everything unwinds back to the point where `PlayerA` was last resumed -- the signal that a round is complete. The process continues by resuming `PlayerA` to start another round of the game. Because each player is a coroutine, it never ceases to exist and, therefore, retains information about previous draws from the deck. When a player finally wins, the process completes. To see this in code, check out [https://github.com/hawkinsw/cs3003/blob/main/subprograms/cardgame.py](https://github.com/hawkinsw/cs3003/blob/main/subprograms/cardgame.py).
+
+Can you see anything similar between objects in an object-oriented programming language and coroutines? Both can store information (state) private to themselves and separate from others (as local variables in the coroutine and member variables in the object) as long as they are in existence. Both can be assigned to variables and moved -- maybe they really aren't all that different at all!
