@@ -2,7 +2,7 @@ Today brings to your porch another edition of the Daily PL! Enjoy the read!
 
 ### What's News
 
-Employees are winning the battle for pay against executives. As influential proxy advisers urge shareholders to join a voting bloc to oppose the pay package of a prominent CEO, HR consultants report that more and more programmers are signing binding contracts when they start new positions that guarantee them better pay. Read on for more details on how these binding pacts effect programmers.
+With the recent change in the economic outlook for the United States and other Western countries, employees are losing the upper hand in compensation negotiations. Employers are increasingly asking their employees to sign binding agreements that govern everything from how many free snacks they will eat per day to the number of days that they need to be in the office each week.
 
 ### The Ties That Bind Us
 
@@ -23,13 +23,13 @@ _Binding_ can happen at various times:
 3.  Compilation (when the program is compiled [note: This "time" is not applicable for all languages])
 4.  Linking (when all modules of compiled code for a program are collected into a complete, executable program [note: Again, this "time" may not apply in all cases])
 5.  Loading (when a program [either compiled or interpreted] is loaded into memory for the purpose of execution)
-6.  Execution
+6.  Run time (program execution)
 
 A _static binding_ occurs before runtime (times 1 through 5 above) and, _crucially_, does not change throughout program execution. A _dynamic binding_ occurs at runtime (time 6 above) and/or changes during program execution.
 
+> **Note**: To be very clear, even though a binding between an attribute and an entity may happen before program execution, if something about that binding changes during execution it is still considered a dynamic binding.
+
 To better realize the importance of understanding binding and when bindings happen for writing correct code, let's analyze two snippets of code: one from C++ and the other from Python. 
-
-
 
 #### C++
 
@@ -55,7 +55,7 @@ def operate_on(left, right):
     return result
 ```
 
-The two snippets look almost identical. We discussed the meaning of the C++ code but never ran it. Sad. Let's not make the same mistake again. Let's see what happens when we execute `operate_on` with some different arguments:
+The two snippets look eerily similar. We discussed the meaning of the C++ code but never ran it. Sad. Let's not make the same mistake again. What happens when we execute `operate_on` with some different arguments:
 
 ```Python
 if __name__=="__main__":
@@ -93,4 +93,4 @@ value=[1,2,3,1,2,3]
 
 Okay. Enough trickery. The point is not that you need to memorize that Python exhibits this behavior. The point _is_ that you need to know that a language could exhibit this behavior and be able to discuss it. Because the meaning of the `*` changes based on the type of `left` and `right`, the binding cannot be made until those types are known. In Python, the type of a variable is not known until the program is executed. In other words, the binding of the meaning (attribute) of the `*` (entity) cannot happen in Python until runtime. That is far, far different than the situation with binding the meaning to the `*` in C++.
 
-These are just a few examples of the importance of the role of (times of) binding between attributes and entities in a programming language (or a program written in that language). In the next class, we will start to explore the six (6) different attributes of variables and how the times of the binding of those attributes to values can play a big role in whether or not a program you write is correct.
+These are just a few examples of the importance of the role of (times of) binding between attributes and entities in a programming language (or a program written in that language). In the next edition of the Daily PL, look for an in-depth journalistic investigation into the six (6) different attributes of variables and how the times of the binding of those attributes to values can play a big role in whether or not a program you write is correct.
