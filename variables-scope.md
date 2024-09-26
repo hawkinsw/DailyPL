@@ -5,11 +5,15 @@ In an effort to raise profit margin and satisfy increasingly restless investors,
 ### Scope
 _Scope_ is the range of statements in which a certain name can be used to access (for either reference or assignment) a variable. Using the vocabulary of bindings, _scope_ can also be defined as the collection of statements which can access a name binding. In other words, scope plays a role in determining the binding of a name to a variable.
 
+Again, the point of studying scope is to help us to understand how we can determine the variable to which an identifier refers in a program.
+
 It is easy to get fooled into thinking that a variable's name attribute is somehow intrinsic to the variable. However, a variable's name is just another attribute bound to a variable (like address, storage, value, etc) that may change throughout program execution. So, then, how is the binding between name and variable done? When is it done?
 
 Before we get started answering those questions, it helps to think about in-scope variables in one of two different types of scopes: _local_ and _non-local_.
 
-* local: A variable is _locally scoped_ to a unit or block of a program if it is declared there. Though not entirely synonymous, because the phrase "unit or block of a program" is so cumbersome we will play a little fast and loose with the definition of scope and use the terms block and unit interchangeably. To be clear, no matter which term we use, we are referring to the part of the program where a name is uniquely mapped to a variable. In C++ such a region is defined by `{`s and `}`s. In Python, such a region is defined by function and class definitions and a variable that is the subject of an assignment in a block is considered local to that block. For instance, in
+* local: A variable is _locally scoped_ to a unit or block of a program if it is declared there. From within that unit or block of code, the programmer can refer to that variable using the name of its declaration. Though not entirely synonymous, because the phrase "unit or block of a program" is so cumbersome, we will play a little fast and loose with the definition of scope and use the terms block and unit interchangeably. To be clear, no matter which term we use, when we say block or unit we are referring to the part of the program where names are _uniquely_ mapped to variables. In other words, in a block, it is not possible to have the same name refer to two different variables[^scope]. In C++ such a region is defined by `{`s and `}`s. In Python, such a region is defined by function and class definitions and a variable that is the subject of an assignment in a block is considered local to that block. For instance, in
+
+[^scope]: This does _not_ preclude the possibility that one of those unique mappings _shadows_ (or hides) a different unique mapping. Read on for more about nested scopes.
 
 ```Python
 def add(a, b):
@@ -33,9 +37,13 @@ int main() {
 
 `b` is local to the source code between the `{` and `}`s of the if statement. `a` is local to the scope between the `{`  and `}` that delimit the body of the `main` function.
 
+If the only variables to which we could refer by name in a programming language were the ones that were locally scoped, then our discussion could end here. We would not need any special rules for determining the variable to which a name refers -- remember, in a scope names have to be unique! 
+
+However, most languages give the programmer the ability to create overlapping (or nested) scopes. With such power comes additional complexity.
+
 * non-local: A variable is non-local if it can be accessed (again, through reference or assignment) but is not local.
 
-Now, let's return to the issue of determining how the language determines the variable to which a name refers. In other words, let's talk about the ways a language can determine the binding between a name and a variable.
+Obviously it would be great if we could refer to a variable whose local scope encompasses the scope where we are writing a particular statement. To accomplish this feat, we will need to set down some rules to determine how to navigate overlapping scopes to find the local scope of the name being used.
 
 First, by definition, if the programmer references the name of a local variable, the binding can be determined relatively easily. However, it gets interesting if the programmer refers to the name of a non-local variable.
 
@@ -83,7 +91,8 @@ def outer():
 if __name__=="main":  
   outer() 
 ```
-![Static scoping - Python](./graphics/StaticScopingExample-Python.png)
+![Static scoping - Python](./graphics/StaticScopingExample-Python-DailyPL.png)
+
 
 When _Statement i_ is encountered statically, the algorithm for resolving the binding between name $a$ and a variable proceeds as follows:
 
@@ -94,7 +103,7 @@ Pretty easy, right?
 Now, what happens when the statement after _Statement i_ is encountered statically and the binding between $b$ and a variable needs to be resolved?
 
 1. $b$ is not a local variable.
-2. Resolution proceeds to search the static parent of _Scope a_ for a local variable named $b$.
+2. Resolution proceeds to search the static parent of _Scope inner_inner_ for a local variable named $b$.
 3. _Scope b_ does contain a local variable named $b$. The name is bound to that local variable.
 
 Just what we expected!
@@ -102,10 +111,10 @@ Just what we expected!
 And, finally, what happens when the binding between the name $c$ and a variable needs to be resolved?
 
 1. $c$ is not a local variable.
-2. Resolution proceeds to search the static parent of _Scope a_ for a local variable named $c$.
-3. _Scope b_ does not contain a local variable named $c$.
-4. Resolution proceeds to search the static parent of _Scope b_ for a local variable named $c$.
-5. _Scope c_ does contain a local variable named $c$. The name is bound to that local variable.
+2. Resolution proceeds to search the static parent of _Scope inner_inner_ for a local variable named $c$.
+3. _Scope inner_inner_ does not contain a local variable named $c$.
+4. Resolution proceeds to search the static parent of _Scope inner_inner_ for a local variable named $c$.
+5. _Scope outer_ does contain a local variable named $c$. The name is bound to that local variable.
 
 Lots of work, but largely as expected! Given that, the program prints what we would expect:
 
