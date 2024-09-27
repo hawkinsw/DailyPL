@@ -3,13 +3,14 @@
 In an effort to raise profit margin and satisfy increasingly restless investors, including activist [William Joy](https://en.wikipedia.org/wiki/Bill_Joy), [Prolog & Gradle](http://us.pg.com) have decided to divest their oral care products, including their world-famous mouthwash. The market cheered the decision with the stock rising 5% in after hours trading.
 
 ### Scope
-_Scope_ is the range of statements in which a certain name can be used to access (for either reference or assignment) a variable. Using the vocabulary of bindings, _scope_ can also be defined as the collection of statements which can access a name binding. In other words, scope plays a role in determining the binding of a name to a variable.
+_Scope_ is the range of statements in which a certain name can be used to access (for either reference or assignment) a variable. Using the vocabulary of bindings, _scope_ can also be defined as the collection of statements which can access a name binding. In other words, scope is the mechanism in a programmaing language that determines the binding of a name to a variable.
 
 Again, the point of studying scope is to help us to understand how we can determine the variable to which an identifier refers in a program.
 
 It is easy to get fooled into thinking that a variable's name attribute is somehow intrinsic to the variable. However, a variable's name is just another attribute bound to a variable (like address, storage, value, etc) that may change throughout program execution. So, then, how is the binding between name and variable done? When is it done?
+It is easy to get fooled into thinking that a variable's name attribute is privileged among the other attribute's of a variable. That is, however, not the case: a variable's name is just another attribute bound to a variable (like address, storage, value, etc) that may change throughout program execution. So, then, how is the binding between name and variable made? When is it done?
 
-Before we get started answering those questions, it helps to think about in-scope variables in one of two different types of scopes: _local_ and _non-local_.
+Before we get started answering those questions, it helps to think about two general categories of scopes: _local_ and _non-local_.
 
 * local: A variable is _locally scoped_ to a unit or block of a program if it is declared there. From within that unit or block of code, the programmer can refer to that variable using the name of its declaration. Though not entirely synonymous, because the phrase "unit or block of a program" is so cumbersome, we will play a little fast and loose with the definition of scope and use the terms block and unit interchangeably. To be clear, no matter which term we use, when we say block or unit we are referring to the part of the program where names are _uniquely_ mapped to variables. In other words, in a block, it is not possible to have the same name refer to two different variables[^scope]. In C++ such a region is defined by `{`s and `}`s. In Python, such a region is defined by function and class definitions and a variable that is the subject of an assignment in a block is considered local to that block. For instance, in
 
@@ -45,9 +46,7 @@ However, most languages give the programmer the ability to create overlapping (o
 
 Obviously it would be great if we could refer to a variable whose local scope encompasses the scope where we are writing a particular statement. With all the rules that we have configured now, we are out of luck because we only know how to refer to variable/name bindings that are local. 
 
-So, to add the functionality of being able to access variables that are local to (one of) the encompassing scope(s), we will need an algorithm. In other words, we will need to set down some rules to determine how to navigate overlapping scopes to find the local scope of the name being used.
-
-First, by definition, if the programmer references the name of a local variable, the binding can be determined relatively easily. However, it gets interesting if the programmer refers to the name of a non-local variable.
+So, to add the functionality of being able to access variables that are local to (one of) the encompassing scope(s), we will need an algorithm. In other words, we will need to set down some rules to determine how to navigate scopes embedded inside one another to find the local scope of the name being used.
 
 Here is _the_ most common algorithm for performing the resolution of the binding between a variable and a name. The process described by this algorithm is known as _scope resolution_. The algorithm is described with respect to a statement, $s$. Think of $s$ as the statement that uses the name to be resolved (which we will refer to as $x$):
 
@@ -65,15 +64,89 @@ But, our algorithm seems more like a wish than a real algorithm -- something lik
 1. Determine a way to get rich. 
 2. Profit
 
-is an algorithm for early retired. There are some details left to work out. As for the scope resolution algorithm, it seems like we have left out a definition of what, exactly, is _parent scope_ and what are _ancestor scopes_? There are not one, but two answers!
+is an algorithm for early retirement. There are some details left to work out. As for the scope resolution algorithm, it seems like we have left out a definition of what, exactly, is _parent scope_ and what are _ancestor scopes_? There are not one, but two answers!
 
 #### Static Scoping
 
 _Static scoping_, also known as _lexical scoping_ is a policy where parent and ancestor scopes are defined in a way that the binding of a name to a variable can be determined using only the program's source code. The parent scope (using our slightly loose definition of scope here [see above]) of a statement $s$ is the unit/block of a program that declared the unit/block of the program that contains $s$.
 
-Statically scoped languages are the kind of languages that we are used to! The way that they perform scope resolution is so natural it almost seems uninteresting to discuss the algorithm!
+There is a small problem with using this definition of parent/ancestor scopes in statically scoped languages. There is an implication that the only places where scopes are introduced are in declarations. Does that seem reasonable in, say, a language like Python?
 
-However, here is an example to consider just to make sure that we are on the same page.
+In Python, scopes are tied directly to functions and classes (with a few exceptions -- [see here](https://docs.python.org/3/reference/executionmodel.html#structure-of-a-program)). And, of course, functions and classes in Python are _declared_. So, the definition seems to make sense for Python. Let's look at an example:
+
+```Python
+
+def peanut():
+  roast = True
+  def favorite():
+    roast = "Honey"
+    if roast == "Honey":
+      return "I loved honey roasted peanuts."
+    else:
+      return "I prefer broiled peanuts."
+ 
+  def emcee():
+    if roast == True:
+      return "You always need a glib emcee."
+    else:
+      return "Is this thing on?"
+
+  emcee()
+
+  favorite()
+```
+
+Let's assume that we stopped the Python program during execution of the line
+
+```Python
+...
+roast = "Honey"
+...
+```
+
+in `favorite`. Let's run the scope resolution algorithm and see whether or not `roast` is _in scope_. First, we check the local scope. And, boom (!!), we are done.
+
+[That was easy.](https://www.youtube.com/watch?v=3YmMNpbFjp0)
+
+But, what about the actions taken by Python when executing
+
+```Python
+...
+if roast == True:
+...
+```
+
+in `emcee`. Well, we aren't as lucky. `roast` is not local. So, we will have to look at the static parent scope. And, remember that definition for statically scoped languages: The parent scope of Scope $x$ is $p$, where $p$ is the scope containing the declaration of Scope $x$. Perfect!! We know that the scope associated with the function `peanut` was the function in which `emcee` was declared. Therefore, the scope associated with function `peanut` is the scope to consider next in the scope resolution algorithm. When we consider _that_ scope, we see that the variable for which we are searching (`roast`) _is_ local to that scope and, therefore, we are done!
+
+However, we have to make a minor concession for languages like C++ where scopes are not always associated with something that is declared. In C++ we are able to introduce new scopes just by using pairs of `{` and `}`. There's no name that we _have_ to give such a block and, therefore, nothing is declared, in the truest sense. If we wanted to try to make the definition fit, we could say that a scope created by a nameless pair of `{` `}`s is "declared". Either way, I think that the definition of static parent/ancestor in a language like C++ will make sense when we look at an example:
+
+Here is an example from the C++ programming language:
+
+```C++
+
+void perform(std::string composition) {
+  double tempo{1/60.0};
+  if (pops(composition)) {
+    play_with_tempo(tempo);
+  } else {
+    int faster_tempo = tempo * 2.0;
+    play_with_tempo(faster_tempo)
+  }
+}
+
+```
+
+If the program were operating on a composition that is _not_ in the Pops style, then the compiler will have to make a decision about whether or not `tempo` is in scope when it is used in the statement
+
+```C++
+    int faster_tempo = tempo * 2.0;
+```
+
+If the algorithm proceeded strictly according to the definition, we might be stuck: after all, we are looking for the scope that declares the scope between two `{` `}`s. Again, there's no declaration there, in the truest sense.
+
+With that little distinction put aside, statically scoped languages are the kind of languages that we are used to! The way that they perform scope resolution is so natural it almost seems uninteresting to discuss the algorithm!
+
+Let's take a look at another example just to make sure that we are on the same page:
 
 ```Python
 def outer():
@@ -94,7 +167,6 @@ if __name__=="main":
   outer() 
 ```
 ![Static scoping - Python](./graphics/StaticScopingExample-Python-DailyPL.png)
-
 
 When _Statement i_ is encountered statically, the algorithm for resolving the binding between name $a$ and a variable proceeds as follows:
 
