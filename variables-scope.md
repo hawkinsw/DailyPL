@@ -43,7 +43,9 @@ However, most languages give the programmer the ability to create overlapping (o
 
 * non-local: A variable is non-local if it can be accessed (again, through reference or assignment) but is not local.
 
-Obviously it would be great if we could refer to a variable whose local scope encompasses the scope where we are writing a particular statement. To accomplish this feat, we will need to set down some rules to determine how to navigate overlapping scopes to find the local scope of the name being used.
+Obviously it would be great if we could refer to a variable whose local scope encompasses the scope where we are writing a particular statement. With all the rules that we have configured now, we are out of luck because we only know how to refer to variable/name bindings that are local. 
+
+So, to add the functionality of being able to access variables that are local to (one of) the encompassing scope(s), we will need an algorithm. In other words, we will need to set down some rules to determine how to navigate overlapping scopes to find the local scope of the name being used.
 
 First, by definition, if the programmer references the name of a local variable, the binding can be determined relatively easily. However, it gets interesting if the programmer refers to the name of a non-local variable.
 
