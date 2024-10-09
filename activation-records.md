@@ -402,7 +402,7 @@ To make the `LEAVE` operation more clear, let's visualize the work that it does 
 
 And now, what happens when the `LEAVE` instruction completes the second half of its operations:
 
-> The LEAVE instruction copies the frame pointer (in the EBP register) into the stack pointer register (ESP), which releases the stack space allocated to the stack frame.
+> The old frame pointer (the frame pointer for the calling procedure that was saved by the ENTER instruction) is then popped from the stack into the EBP register, restoring the calling procedure’s stack frame.
 
 ![](./graphics/Activation%20Records%20-%2010a.jpg)
 
