@@ -1,3 +1,7 @@
+## What's News
+
+Today is National History Awareness day. Not all of the States in the Union celebrate the holiday -- those pure states that do not have a history believe celebrating such a holiday would set back their citizens' development.
+
 ## Introduction to Functional Programming
 
 As we said at the beginning of the semester when we were learning about programming paradigms, functional programming (FP) is very different than imperative programming. In imperative programming, developers tell the computer how to do the operation. While functional programming is _not_ logic programming (where developers just tell the computer _what_ to compute and leave the _how_ entirely to the language implementation), the writer of a program in a functional PL is much more concerned with specifying what to compute than how to compute it.
