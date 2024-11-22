@@ -1,24 +1,30 @@
 ## Introduction to Functional Programming
 
-As we said at the beginning of the semester when we were learning about programming paradigms, FP is very different than imperative programming. In imperative programming, developers tell the computer how to do the operation. While functional programming is _not_ logic programming (where developers just tell the computer _what_ to compute and leave the _how_ entirely to the language implementation), the writer of a program in a functional PL is much more concerned with specifying what to compute than how to compute it.
+As we said at the beginning of the semester when we were learning about programming paradigms, functional programming (FP) is very different than imperative programming. In imperative programming, developers tell the computer how to do the operation. While functional programming is _not_ logic programming (where developers just tell the computer _what_ to compute and leave the _how_ entirely to the language implementation), the writer of a program in a functional PL is much more concerned with specifying what to compute than how to compute it.
 
 ![](./graphics/Programming-Language-What-How-Continuum.png)
 
 ### Four Characteristics of Pure, Strongly-Typed Functional Programming
 
-In this class, we are going to study a subset of functional programming languages. We are going to study pure, strongly-typed functional programming languages. There are four characteristics that epitomize these languages:
+There are a range of functional programming languages and they are all equally worthy of study. However, we are going to study pure, strongly-typed functional programming languages because those languages are the ones that can really, really challenge you to think in new ways about what it means to write code.
+
+There are four characteristics that epitomize pure, strongly-typed functional programming languages:
 
 1.  There is no state
 2.  Functions are central
     1.  Functions can be parameters to other functions
-    2.  Functions can be return values from other others
+    2.  Functions can be return values from other others[^higher_order] 
     3.  Program execution _is_ function evaluation
 3.  Control flow is performed by recursion and conditional expressions
 4.  Lists are a fundamental data type
 
-In a pure, strongly-typed functional programming language, there are no variables, per se. And because there are no variables, there is no state. That does _not_ mean there are no names. Names are still important. It simply means that names refer to expressions themselves and not their values. The distinction will become more obvious as we continue to learn more about writing programs in functional languages.
+[^higher_order]: A function that takes another function as a parameter and/or returns a function is known as a _higher order_ function.
 
-Because there is no state, a pure, strongly-typed functional programming language is not _history sensitive._ A language that is _history sensitive_ means that results of operations in that language can be affected by operations that have come before it. For example, in an imperative programming language, a function may be history sensitive if it relies on the value of a global variable to calculate its return value. Why does that count as history sensitive? Because the value in the global variable could be affected by prior operations.
+> Note: Not _all_ of those characteristics are unique to the subset of functional programming languages that are pure and strongly typed.
+
+In a pure, strongly-typed functional programming language, there are no variables, per se. And because there are no variables, there is no state. That does _not_ mean there are no names. Names are still important. It simply means that names refer to expressions themselves and not their values. The distinction will become more obvious as we continue to learn more about writing programs in pure functional programming languages.
+
+Because there is no state, a pure functional programming language is not _history sensitive._ A language that is _history sensitive_ means that results of operations in that language can be affected by operations that have come before it. For example, in an imperative programming language, a function may be history sensitive if it relies on the value of a global variable to calculate its return value. Why does that count as history sensitive? Because the value in the global variable could be affected by prior operations.
 
 A language that is not history sensitive has _referential transparency._ We learned the definition of referential transparency before, but now it might make a little more sense. In a language that has referential transparency, the same function called with the same arguments generates the same result no matter what operations have preceded it.
 
@@ -40,7 +46,7 @@ The inability to execute a Lisp program efficiently on a physical computer based
 
 > Note:_ This is _not true_ today!
 
-Until the late 1980s hardware vendors thought that it would be worthwhile to build physical machines with non-von Neumann architectures. In fact, they built one such machine that made executing Lisp programs faster. Here is an image of a so-called Lisp Machine.
+Until the late 1980s hardware vendors found it worthwhile to build physical machines with non-von Neumann architectures. In fact, they built one such machine that made executing Lisp programs faster. Here is an image of a so-called Lisp Machine.
 
 ![](./graphics/LISP_machine.jpg)
 
@@ -74,20 +80,29 @@ is a list in Lisp. In Lisp, `(a b c)` could be interpreted as a list of _atoms_ 
 
 ## Lambda Calculus
 
-Lambda Calculus is the theoretical basis of functional programming languages in the same way that the Turing Machine is the theoretical basis of the imperative programming languages. The Lambda Calculus is nothing like "calculus" -- the word calculus is used here in its strict sense: [a method or system of calculation](https://en.wikipedia.org/wiki/Calculus_(disambiguation)). It is better to think of Lambda Calculus as a (albeit primitive) programming language rather than a branch of mathematics.
+Lambda Calculus is the theoretical basis of functional programming languages in the same way that the Turing Machine is the theoretical basis of the imperative programming languages. The Lambda Calculus is nothing like "calculus" -- the word calculus is used here in its strict sense: [a method or system of calculation](https://en.wikipedia.org/wiki/Calculus_(disambiguation)). It is better to think of Lambda Calculus as a (n albeit primitive) programming language rather than a branch of mathematics.
 
 Lambda Calculus is a model of computation defined entirely by function application. The Lambda Calculus is as powerful as a Turning Machine which means that anything computable can be computed in the Lambda Calculus. For a language as simple as the Lambda Calculus, that's remarkable!
 
-The entirety of the Lambda Calculus is made up of three entities:
+The focus of the Lambda Calculus is the _expression_ and an expression can be one of three entities:
+1. a _name_
+2. a _function_
+3. an _application_.
 
-1.  Expression: a _name_, a _function_ or an _application_
-2.  Function:  $\lambda$ *\<name\>* `.` *\<expression\>*
-3.  Application: *\<expression\>* *\<expression\>*
+All functions in the Lambda Calculus are anonymous. Defining a function in the Lambda Calculus requires naming the parameter (yes, singular -- more about this later!) and giving an expression that constitutes its body:
 
-Notice how the elements of the Lambda Calculus are defined in terms of themselves. In most cases it is possible to restrict _name_s in the Lambda Calculus to be any single letter of the alphabet -- `a` is a name, `z` is a name, etc. Strictly speaking, functions in the Lambda Calculus are anonymous -- in other words they have no name. The _name_ after the $\lambda$ in a function in the Lambda Calculus can be thought of as the parameter of the function. Here's an example of a function in the Lambda Calculus:
+$\lambda$ *\<name\>* `.` *\<expression\>*
+
+Then there is the application. 
+
+*\<expression\>* *\<expression\>*
+
+An application is, essentially, invoking a function on some arguments.
+
+Notice how the elements of the Lambda Calculus are defined in terms of themselves. In most cases it is possible to restrict *name*s in the Lambda Calculus to be any single letter of the alphabet -- `a` is a name, `z` is a name, etc. Again, strictly speaking, functions in the Lambda Calculus are anonymous -- in other words they have no name. The _name_ after the $\lambda$ in a function in the Lambda Calculus can be thought of as the parameter of the function. Here's an example of a function in the Lambda Calculus:
 
 $$
 \lambda x . x
 $$
 
-Lambda Calculiticians (yes, I just made up that term) refer to this as the _identity_ function. This function simply returns the value of its argument! But didn't I say that functions in the Lambda Calculus don't have names? Yes, I did. _Within_ the language there is no way to name a function. That does not mean that we cannot assign semantic values to those functions. In fact, associating meaning with functions of a certain format is _exactly_ how high-level computing is done with the Lambda Calculus.
+Lambda Calculiticians (yes, I just made up that term) refer to this as the _identity_ function. This function simply returns the value of its argument! But didn't I say that functions in the Lambda Calculus don't have names? Yes, I did. _Within_ the language there is no way to name a function. That does not mean that we cannot assign semantic values to those functions. In fact, associating meaning with functions of a certain _structure_ is _exactly_ how high-level computing is done with the Lambda Calculus.
