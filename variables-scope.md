@@ -3,11 +3,10 @@
 In an effort to raise profit margin and satisfy increasingly restless investors, including activist [William Joy](https://en.wikipedia.org/wiki/Bill_Joy), [Prolog & Gradle](http://us.pg.com) have decided to divest their oral care products, including their world-famous mouthwash. The market cheered the decision with the stock rising 5% in after hours trading.
 
 ### Scope
-_Scope_ is the range of statements in which a certain name can be used to access (for either reference or assignment) a variable. Using the vocabulary of bindings, _scope_ can also be defined as the collection of statements which can access a name binding. In other words, scope is the mechanism in a programmaing language that determines the binding of a name to a variable.
+_Scope_ is the range of statements in which a certain name can be used to access (for either reference or assignment) a variable. Using the vocabulary of bindings, _scope_ can also be defined as the collection of statements which can access a name binding. In other words, scope is the mechanism in a programming language that determines the binding of a name to a variable.
 
 Again, the point of studying scope is to help us to understand how we can determine the variable to which an identifier refers in a program.
 
-It is easy to get fooled into thinking that a variable's name attribute is somehow intrinsic to the variable. However, a variable's name is just another attribute bound to a variable (like address, storage, value, etc) that may change throughout program execution. So, then, how is the binding between name and variable done? When is it done?
 It is easy to get fooled into thinking that a variable's name attribute is privileged among the other attribute's of a variable. That is, however, not the case: a variable's name is just another attribute bound to a variable (like address, storage, value, etc) that may change throughout program execution. So, then, how is the binding between name and variable made? When is it done?
 
 Before we get started answering those questions, it helps to think about two general categories of scopes: _local_ and _non-local_.
@@ -46,7 +45,7 @@ However, most languages give the programmer the ability to create overlapping (o
 
 Obviously it would be great if we could refer to a variable whose local scope encompasses the scope where we are writing a particular statement. With all the rules that we have configured now, we are out of luck because we only know how to refer to variable/name bindings that are local. 
 
-So, to add the functionality of being able to access variables that are local to (one of) the encompassing scope(s), we will need an algorithm. In other words, we will need to set down some rules to determine how to navigate scopes embedded inside one another to find the local scope of the name being used.
+So, to add the functionality of being able to access variables that are local to (one of) the encompassing scope(s), we will need an algorithm. In other words, we will need to set down some rules to determine how to navigate intersecting scopes to find the local scope of a non-local name.
 
 Here is _the_ most common algorithm for performing the resolution of the binding between a variable and a name. The process described by this algorithm is known as _scope resolution_. The algorithm is described with respect to a statement, $s$. Think of $s$ as the statement that uses the name to be resolved (which we will refer to as $x$):
 
@@ -55,7 +54,7 @@ Here is _the_ most common algorithm for performing the resolution of the binding
 3. If the parent scope $p$ contains a local variable named $x$, $x$ is bound to that variable.
 4. If the name $x$ is still not bound to a variable, consider the parent scope of $p$, $p'$. Continue searching parent scopes until there are no more ancestor scopes.
 
-The algorithm is relatively straightforward, right? All that formalism reflects our intuition that we resolve name to variable bindings by looking for the declaration of the name beginning as close to the point of its use as possible and then continuing to work outward.
+The algorithm is relatively straightforward, right? All that formalism reflects our intuition that we resolve name-to-variable -bindings by looking for the local scope of the name beginning as close to the point of its use as as a non-local variable as possible (and then continuing to work outward).
 
 Well, yes! 
 
@@ -116,7 +115,7 @@ if roast == True:
 ...
 ```
 
-in `emcee`. Well, we aren't as lucky. `roast` is not local. So, we will have to look at the static parent scope. And, remember that definition for statically scoped languages: The parent scope of Scope $x$ is $p$, where $p$ is the scope containing the declaration of Scope $x$. Perfect!! We know that the scope associated with the function `peanut` was the function in which `emcee` was declared. Therefore, the scope associated with function `peanut` is the scope to consider next in the scope resolution algorithm. When we consider _that_ scope, we see that the variable for which we are searching (`roast`) _is_ local to that scope and, therefore, we are done!
+in `emcee`. Well, we aren't as lucky. `roast` is not local. So, we will have to look at the static parent scope. And, remember that definition for statically scoped languages: The parent scope of scope $x$ is $p$, where $p$ is the scope containing the declaration of scope $x$. Perfect!! We know that the scope associated with the function `peanut` was the function in which `emcee` was declared. Therefore, the scope associated with function `peanut` is the scope to consider next in the scope resolution algorithm. When we consider _that_ scope, we see that the variable for which we are searching (`roast`) _is_ local to that scope and, therefore, we are done!
 
 However, we have to make a minor concession for languages like C++ where scopes are not always associated with something that is declared. In C++ we are able to introduce new scopes just by using pairs of `{` and `}`. There's no name that we _have_ to give such a block and, therefore, nothing is declared, in the truest sense. If we wanted to try to make the definition fit, we could say that a scope created by a nameless pair of `{` `}`s is "declared". Either way, I think that the definition of static parent/ancestor in a language like C++ will make sense when we look at an example:
 
@@ -150,23 +149,33 @@ Let's take a look at another example just to make sure that we are on the same p
 
 ```Python
 def outer():
-  a = "outer contents of a"
-  b = "outer contents of b"
-  c = "outer contents of c"
-  def inner():
-    a = "inner contents of a"
-    b = "inner contents of b"
-    def inner_inner():
-      a = "inner inner contents of a"
-      print(f"{a=}")
-      print(f"{b=}")
-      print(f"{c=}")
-    inner_inner()
-  inner()  
+  a = "outer_a"
+  b = "outer_b"
+  c = "outer_c"
+
+  def inner1():
+    a = "inner1_a"
+    b = "inner1_b"
+    inner3()
+
+  def inner2():
+    a = "inner2_a"
+    b = "inner2_b"
+    inner3()
+
+  def inner_inner():
+    a = "inner inner contents of a"
+    print(f"{a=}")
+    print(f"{b=}")
+    print(f"{c=}")
+
+  print("Calling inner1:")
+  inner1()  
+
 if __name__=="main":  
   outer() 
 ```
-![Static scoping - Python](./graphics/StaticScopingExample-Python-DailyPL.png)
+![Static scoping - Python](./graphics/StaticScopingExample-Python-DailyPL2.png)
 
 When _Statement i_ is encountered statically, the algorithm for resolving the binding between name $a$ and a variable proceeds as follows:
 
@@ -174,28 +183,22 @@ When _Statement i_ is encountered statically, the algorithm for resolving the bi
 
 Pretty easy, right?
 
-Now, what happens when the statement after _Statement i_ is encountered statically and the binding between $b$ and a variable needs to be resolved?
+Now, what happens when _Statement j_ is encountered statically and the binding between $b$ and a variable needs to be resolved?
 
 1. $b$ is not a local variable.
-2. Resolution proceeds to search the static parent of _Scope inner_inner_ for a local variable named $b$.
-3. _Scope b_ does contain a local variable named $b$. The name is bound to that local variable.
+2. Resolution proceeds to search the static parent for a local variable named $b$.
+3. The static parent does contain a local variable named $b$. The name is bound to that local variable.
 
 Just what we expected!
 
-And, finally, what happens when the binding between the name $c$ and a variable needs to be resolved?
-
-1. $c$ is not a local variable.
-2. Resolution proceeds to search the static parent of _Scope inner_inner_ for a local variable named $c$.
-3. _Scope inner_inner_ does not contain a local variable named $c$.
-4. Resolution proceeds to search the static parent of _Scope inner_inner_ for a local variable named $c$.
-5. _Scope outer_ does contain a local variable named $c$. The name is bound to that local variable.
+And, finally, what happens when the binding between the name $c$ and a variable needs to be resolved? The same thing as happened during the resolution of $b$!
 
 Lots of work, but largely as expected! Given that, the program prints what we would expect:
 
 ```Python
-a='inner inner contents of a'
-b='inner contents of b'
-c='outer contents of c'
+a='inner3_a'
+b='outer_b'
+c='outer_c'
 ```
 
 **Consider this ...**
@@ -234,7 +237,7 @@ Static scoping is what we have grown up with, so to speak, as programmers. We ar
 
 _Dynamic scoping_ is the type of scope resolution policy where the binding between a name and a variable can only be determined during program execution. In a dynamically scoped programming language, determining the name/value binding is done iteratively by searching through a block's nested _dynamic parents_. The _dynamic parent_ of a block is the block from which the current block was _executed_. Very few programming languages use dynamic scoping (BASH, Perl [optionally]) because it makes checking the types of variables difficult for the programmer (and impossible for the compiler/interpreter) and because it increases the "distance" between name/variable binding and use during program execution. However, dynamic binding makes it possible for functions to require fewer parameters because dynamically scoped non-local variables can be used in their place. We will learn more about this latter advantage when we discuss closures during our exploration of functional programming languages.
 
-The concept of _dynamic parents_ has a close connection with _activation records_ (a.k.a. _stack frames_) and the _runtime stack_ which we will study in a few lessons. In the meantime, let's assume that Python is a dynamically scoped language and decipher the output of the same program as above:
+The concept of _dynamic parents_ has a close connection with _activation records_ (a.k.a. _stack frames_) and the _runtime stack_ which we will study in a few lessons. In the meantime, let's assume that Python is a dynamically scoped language and decipher the output of (almost) the same program as above:
 
 ```console
 Calling inner1:
@@ -252,8 +255,8 @@ How does this work? What happens when _Statement i_ is encountered at runtime an
 
 1. $b$ is not a local variable.
 2. Resolution proceeds to search the dynamic parent of _Statement i_ for a local variable named $b$. Depending on whether `inner3` was called from `inner2` or `inner1`, the next scope to be searched will be different.
-3. If `inner3` was called from `inner1` (_Statement j_), then the scope of that function is searched for a local variable named $b$. Success! $b$ is bound to a local variable whose contents are `"inner1_b"`.
-4. If `inner3` was called from `inner2` (_Statement k_), then the scope of that function is searched for a local variable named $b$. Success! $b$ is bound to a local variable whose contents are `"inner2_b"`
+3. If `inner3` was called from `inner1` (_Statement j_), then the scope of that function is the dynamic parent of _Statement i_ and it is searched for a local variable named $b$. Success! $b$ is bound to a local variable whose contents are `"inner1_b"`.
+4. If `inner3` was called from `inner2` (_Statement k_), then the scope of that function is the dynamic parent of _Statement i_ and it is searched for a local variable named $b$. Success! $b$ is bound to a local variable whose contents are `"inner2_b"`
 
 That's amazing! It is not _that_ different from static scope resolution but gives us so much more flexibility. That's what is so neat about programming languages: A small tweak to one particular part of the language can give us the opportunity to think very differently about the way that programs are structured.
 
