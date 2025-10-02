@@ -1,24 +1,24 @@
 ### What's News
 
-Black and Decker, the popular tool maker, is in talks to combine with Texas Imperatives to create a brand new company that sells both power tools and programming tools. The companies have described cost efficiencies from the combination and believe that they will be able to build better corporate human resources codes, for instance. As part of their announcement, they said that they chose "The Right Tool For The Job" as their slogan.
+Black and Type Checker, the popular tool maker, is in talks to combine with Texas Imperatives to create a brand new company that sells both power tools and programming tools. The companies have described cost efficiencies from the combination and believe that they will be able to build better corporate human resources codes, for instance. It could rival the private-equity purchase of EA as the largest leveraged buyout in history. As part of their announcement, they said that they chose "The Right Tool For The Job" as their slogan.
 
 ### The Right Tool For the Job
 
-Just like there is the right tool for every job, there is a "right" type for every variable. Of course you all remember the definition of _type_ (the range of valid values for a variable and the set of valid operations on those values) but just why are they important? Types are useful pieces in programming languages because they allow the language (and its associated tools) to help us programmers write correct code. The key, of course, is help.
+Just like there is the right tool for every job, there is a "right" type for every variable. Of course you all remember the definition of _type_ (the range of valid values for a variable and the set of valid operations on those values) but just why are types important? Types are useful pieces in programming languages because they allow the language (and its associated tools) to help us programmers write correct code. The key, of course, is help.
 
-> There are languages where you can actually do all your computations _using types_. In these languages, some theorists argue that if your program is accepted by the "compiler", then the program is provably correct. We will discuss these arguments (and others) when we talk about dynamic semantics of programs.
+> There are languages where you can actually do all your computations _using types_. In these languages, some theorists argue that if your program is accepted by the "compiler", then the program is provably correct. We will discuss these arguments (and others) when we talk about semantics of programs.
 
-Associating types with variables in languages like C, C++, Python, etc. give the language a way to check that we are are writing code that makes meaningful use of variables. How does it do that? Well, it assumes that if we modify variables using operations from within its type's set of valid operations, then we are not doing anything _obviously_ wrong. Of course, we can always use a sequence of valid operations to end up with a variable whose value is nonsense (e.g., dividing an integer by 0), but it's definitely *easier* to generate those nonsense values when we are free to perform operations on them that are not in their set of valid operations (e.g., dividing a string by a floating-point number).
+Associating types with variables in languages like C, C++, Python, etc. give the language a way to check that we are are writing code that makes meaningful use of variables. How does it do that? Well, it assumes that if we modify variables using operations from within its type's set of valid operations, then we are not doing anything _obviously_ wrong. Of course, we can always use a sequence of valid operations to end up with a variable whose value is nonsense (e.g., dividing an integer by 0), but it's definitely _easier_ to generate those nonsense values when we are free to perform operations on those values that are not in their set of valid operations (e.g., dividing a string by a floating-point number).
 
 Given how helpful it is to bind variables with types, it should be clear that choosing the right type will help us programmers even more. In order to choose the right type, we'll need to know the types that are usually available to help us organize our data.
 
 #### A Primal Urge
 
-Before discussing individual types by name and talking about their characteristics, let's discuss how we can divide types into two broad categories. The first category are known as primitive variable types. These are variable types that are "built into" the language. To the programmer using the language, they appear to be atomic -- the programmer cannot break apart the values of variables that have these types; the programmer uses the entire value or none of value at all. In many programming languages, the values of primitive variables map directly to pieces of data that the underlying computer hardware knows how to use. For instance, the integer type is usually a primitive in a programming language. Other examples include boolean variables, floating-point variables and character variables.
+Before discussing individual types by name and talking about their characteristics, let's discuss how we can divide types into two broad categories. The first category are known as _primitive variable_ types. These are variable types that are "built into" the language. To the programmer using the language, they appear to be atomic -- the programmer cannot break apart the values of variables that have these types; the programmer uses the entire value or none of the value at all. In many programming languages, the values of primitive variables map directly to pieces of data that the underlying computer hardware knows how to use. For instance, the type that represents whole numbers is usually a primitive in a programming language. Other examples of primitive types include boolean variables, floating-point variables and character variables.
 
-On the other hand, languages have aggregate-typed variables. Whereas a value with a primitive type cannot be broken apart, a variable with an aggregate type can be pieced apart. An aggregate type is composed of one or more other types -- primitive or aggregate. The ability to make aggregate types that include either primitives or other aggregate types gives the programmer all the power that they need to create a type to model almost any type of data that they need to model in their application. 
+On the other hand, languages have _aggregate-typed_ variables. Whereas a value with a primitive type cannot be broken apart, a variable with an aggregate type can be pieced apart. An aggregate type is composed of values of one or more other types -- primitive or aggregate. The ability to make aggregate types that include values of either primitives or other aggregate types gives the programmer all the power that they need to create a type to model almost any type of data that they need to model in their application. 
 
-I think that is fascinating -- such a small design decision (including in the programming language the ability to embed types in other types) gives the programmer an infinite amount of control and power to customize.
+I think that is fascinating -- such a small design decision (including in the programming language the ability to compose types in other types) gives the programmer an infinite amount of control and power to customize.
 
 Just what are some of the most common styles of aggregate types?
 
@@ -36,7 +36,35 @@ If the language's arrays are not statically sized, the only other reasonable opt
 
 One benefit of a language with dynamically-sized arrays is that it is possible for the code generated by the compiler for that language (or the language's interpreter) to check to make sure that array accesses are done using safe indexes -- indexes that are within the array's size. That's a really powerful safety feature. However, that does not come without a price: each array access can only proceed once the safety of the access is checked. As you can tell, these are not easy choices for a language designer to make.
 
-The homogeneity requirement for an array also has performance implications. Why isn't possible for arrays to hold elements of different types? One of the benefits of using an array is that it is a _random-access aggregate data type_. That means that accesses to _any_ of the elements in that aggregate can be done in the same amount of time as any other. In order to achieve that constant-time access of data within the aggregate, a language relies on the fact that each of its elements are the same size. With that knowledge in its back pocket, the code that a language's compiler generates or the language's runtime can calculate the address in memory of a value at a given index with a simple multiplication: $addr = base + i*s$ where $base$ is the address of the first element of the array in memory, $i$ is the index of the element to access and $s$ is the size of each of those elements. Pretty awesome! 
+The homogeneity requirement for an array also has performance implications. Why isn't possible for arrays to hold elements of different types? One of the benefits of using an array is that it is a _random-access aggregate data type_. That means that accesses to _any_ of the elements in that aggregate can be done in the same amount of time as any other. Or, to say it another way, if there is an array of `int`s in C++ that holds the values of everyone's age in the class (named `ages`), then the values at
+
+```C++
+ages[0]
+```
+
+and 
+
+```C++
+ages[4]
+```
+
+take the same amount of time to access.[^access-roughly-speaking]
+
+How does this work? Well, it all relies on the fact that each of the elements in the array is of the same type. Part and parcel with reading the value of a variable (or writing a value to a variable) is calculating its address in memory. So, before we can even start the operation of reading the two values from the `ages` array, we have to calculate their addresses.
+
+In a language like C (or C++), variables that have array types are really nothing but pointers to the first element in the array. So, to calculate the address of `ages[0]`, our job is pretty much done: just refer to the address in `ages`. But, what about `ages[4]`? Look at the top part of the image below for a (relatively faithful -- check out [this](https://godbolt.org/z/Kcq1x4Wsd) code if you don't believe me!) representation of how an array in C/C++ would be stored in memory. Assuming that we can use [`sizeof(`$X$`)`](https://en.cppreference.com/w/cpp/language/sizeof.html) to get (at compile time) the size (in memory in bytes) of a type $X$, to get from `ages` to `ages[4]` would require advancing `4*sizeof(int)` bytes from `ages`. What about if we wanted `ages[2]`? To get from `ages` to `ages[2]` would require advancing `2*sizeof(int)`. In other words, no matter what $i$ the programmer writes in `ages[`$i$`]`, calculating the address of that variable in memory requires no more than a simple multiplication and addition! No wonder it takes the same amount of time to get/set any element in an array![^pointer-arithmetic]
+
+Generally, calculating the address of an element at index $y$ of an array of elements that have type $T$ whose name is `ar` can be done like
+
+`ar` $+ y*$`sizeof(`$T$`)`
+
+What if arrays could hold elements of different types, like in the bottom of the figure shown below? Could we do that same trick? Obviously not! The size (in memory in bytes) of the string in the first element is not the same as the size of the floating-point number in the third element -- if we used the formula above to calculate the address of `info[3]` ... well, it wouldn't even make sense. Instead, to find the address of a given element, the compiler (or runtime) would have to generate code that (or execute) steps through each element, skipping to the next element only after inspecting the type of the current element. That seems less like an array and more like a linked ... okay, I won't say it!
+
+![](./graphics/HeterogeneousVHomogeneousArray.png)
+
+[^pointer-arithmetic]: Yes, those calculations _are_ what the code generated by a C/C++ does, but do _not_ write that in your program until you understand [_pointer arithmetic_](https://en.cppreference.com/w/cpp/language/operator_arithmetic.html). Otherwise you will get some very fishy results.
+
+[^access-roughly-speaking]: Yes, there will be reasons why accessing one could be faster than another (cache effects, etc.), but generally speaking ...
 
 Without context, the decision of a language's designers to require that each element in an array have the same type seems arbitrary. However, when we look at the same decision in terms of the goal of making access to each element a constant-time operation, that restriction seems reasonable.
 
@@ -64,7 +92,7 @@ Pretty neat!
 
 No, not the vinyl records that are having a [massive comeback](https://www.theverge.com/2024/3/26/24112369/riaa-2023-music-revenue-streaming-vinyl-cds-physical-media). These records are another aggregate data type. The record shares with tuples that it can contain items of different types; the record shares with arrays that the individual elements can be randomly accessed; the record shares with dictionaries the use of non-numeric indexes for accessing individual elements in the aggregate. Woah. That's lots of capabilities.
 
-In the C and C++ programming languages, records are typically spelled `struct`. As an example, let's say that we were interested in modeling the forecast for a particular day. Weather people love to talk about how the day will be overall and give us the high and low temperature. We could model the forecast using a string to describe the day overall (`overall`) and two floating-point numbers to represent the high and the low temperatures:
+In the C and C++ programming languages, records are typically spelled `struct`. As an example, let's say that we were interested in modeling the forecast for a particular day. Forecasters love to talk about how the day will be overall and give us the high and low temperature. We could model the forecast using a string to describe the day overall (`overall`) and two floating-point numbers to represent the high and the low temperatures:
 
 ```C++
 struct Forecast {
@@ -88,4 +116,4 @@ int main() {
 
 #### Conclusion
 
-Types in programming languages are a huge boon for programmers. The type of a variable gives the language power to help us write correct programs by increasing the chances that we will only write code that operates on data in meaningful ways. Types can be broadly categorized as _primitive_ or _aggregate_. Values of variables with a primitive type are indivisible -- programmers cannot pick apart values of variables with primitive types into subcomponents. Aggregates, on the other hand, are data types that contain other data types -- either primitive or aggregate. Knowing the types are common to most programming languages makes it easy to transition from language to language and help you pick the right data model for a particular application.
+Types in programming languages are a huge boon for programmers. The type of a variable gives the language power to help us write correct programs by increasing the chances that we will only write code that operates on data in meaningful ways. Types can be broadly categorized as _primitive_ or _aggregate_. Values of variables with a primitive type are indivisible -- programmers cannot pick apart values of variables with primitive types into subcomponents. Aggregates, on the other hand, are data types that contain other data types -- either primitive or aggregate. Knowing the types that are common to most programming languages makes it easy to transition from language to language and help makes it easier to pick the right data model for a particular application.
