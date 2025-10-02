@@ -163,8 +163,8 @@ def outer():
     b = "inner2_b"
     inner3()
 
-  def inner_inner():
-    a = "inner inner contents of a"
+  def inner3():
+    a = "inner3_a"
     print(f"{a=}")
     print(f"{b=}")
     print(f"{c=}")
@@ -175,6 +175,7 @@ def outer():
 if __name__=="main":  
   outer() 
 ```
+
 ![Static scoping - Python](./graphics/StaticScopingExample-Python-DailyPL2.png)
 
 When _Statement i_ is encountered statically, the algorithm for resolving the binding between name $a$ and a variable proceeds as follows:
@@ -195,7 +196,8 @@ And, finally, what happens when the binding between the name $c$ and a variable 
 
 Lots of work, but largely as expected! Given that, the program prints what we would expect:
 
-```Python
+```console
+Calling inner1:
 a='inner3_a'
 b='outer_b'
 c='outer_c'
@@ -239,6 +241,37 @@ _Dynamic scoping_ is the type of scope resolution policy where the binding betwe
 
 The concept of _dynamic parents_ has a close connection with _activation records_ (a.k.a. _stack frames_) and the _runtime stack_ which we will study in a few lessons. In the meantime, let's assume that Python is a dynamically scoped language and decipher the output of (almost) the same program as above:
 
+```Python
+def outer():
+  a = "outer_a"
+  b = "outer_b"
+  c = "outer_c"
+
+  def inner1():
+    a = "inner1_a"
+    b = "inner1_b"
+    inner3()
+
+  def inner2():
+    a = "inner2_a"
+    b = "inner2_b"
+    inner3()
+
+  def inner3():
+    a = "inner3_a"
+    print(f"{a=}")
+    print(f"{b=}")
+    print(f"{c=}")
+
+  print("Calling inner1:")
+  inner1()  
+  print("Calling inner2:")
+  inner2()
+
+if __name__=="main":  
+  outer() 
+```
+
 ```console
 Calling inner1:
 a='inner3_a'
@@ -265,3 +298,14 @@ That's amazing! It is not _that_ different from static scope resolution but give
 The referencing environment of a statement contains all the name/variable bindings visible at that statement. NOTE: The examples in the book on pages 223 and 224 are absolutely horrendous -- disregard them entirely. Consider the example online here: [https://github.com/hawkinsw/cs3003/blob/main/scope_lifetime/referencing_environment.py](https://github.com/hawkinsw/cs3003/blob/main/scope_lifetime/referencing_environment.py). Play around with that code and make sure that you understand why certain variables are in the referencing environment and others are not. 
 
 In case you think that this is theoretical and not useful to you as a real, practicing programmer, take a look at the official documentation of the Python execution model and see how the language relies on the concept of referencing environments: [https://docs.python.org/3/reference/executionmodel.html#naming-and-binding](https://docs.python.org/3/reference/executionmodel.html#naming-and-binding). Pretty cool!!
+
+
+```Python
+
+def root_for_uc(sport):
+  if is_volleyball(sport):
+    return True
+  else:
+    return False
+
+```
