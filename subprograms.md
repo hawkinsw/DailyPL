@@ -1,10 +1,10 @@
 ### What's News
 
-In recent weeks it was revealed that an almost-complete nuclear submarine sunk to the bottom of the sea. That stunning development stole the spotlight from subprograms that have recently made their share of headlines.
+In recent weeks it was revealed that an almost-complete nuclear sub*marine* sunk to the bottom of the sea. That stunning development stole the spotlight from sub*programs* that have recently made their share of headlines.
 
 ## Subprograms
 
-A _subprogram_ is a type of abstraction. It is _process abstraction_ where the _how_ of a process is hidden from the user who concerns themselves only with the _what_. A _subprogram_ provides process abstraction by naming a collection of statements that define parameterized computations.​ Again, the collection of statements determines how the process is implemented. _Subprogram_ _parameters_ give the user the ability to control the way that the process executes. There are three types of subprograms:
+A _subprogram_ is a type of abstraction. It is _process abstraction_ where the _how_ of a process is hidden from the user who concerns themselves only with the _what_. A _subprogram_ provides process abstraction by naming a collection of statements that define parameterized computations.​ Again, the collection of statements determines how the process is implemented. _Subprogram_ _parameters_ give the subprogram user the ability to control the way that the calculation performed by the subprogram executes. There are three types of subprograms:
 
 1. Procedure: A subprogram that does _not_ return a value.
 2. Function: A subprogram that _does_ return a value.
@@ -16,20 +16,19 @@ Pay close attention to the book's explanation and definitions of terms like _par
 
 Subprograms are characterized by three facts:
 
-1.  A subprogram has only one entry point
-2.  Only one subprogram is executing at any time
+1.  A subprogram has only one entry point;
+2.  Only one subprogram is executing at any time;
     - Note: There may be more than one subprogram that has started but not yet completed. Those subprograms are known as _active_ subprograms. Again, there may be multiple active subprograms, but there is only one executing subprogram.
-3.  Program execution returns to the caller upon completion of a subprogram
+3.  Program execution returns to the caller upon completion of a subprogram.
 
 ### Calling a Subprogram: Matching Parameters with Arguments
-There is a difference between (formal) parameters and actual parameters (also know as arguments). (Formal) parameters belong with the function definition (or the declaration, protocol). They give names to variables that the function implementation can use to refer to values that the user specifies at the time that the function is called. Those values (specified by the user at the time the subprogram is invoked) are called the arguments. The number, type and order of arguments "must" (well, almost "must") match the number, type and order of the parameters. In most cases, order is used to match the arguments to the parameters. The first parameter is matched to the first argument and the second parameter is matched to the second argument, and so on. Arguments that are matched with parameters in this way are known as _positional arguments_. Once the arguments are matched to the parameters, their types are confirmed to match. Matching arguments to parameters by their position implies that there are the same number of arguments and parameters.
+There is a difference between (formal) _parameters_ and actual parameters (also know as _arguments_). (Formal) parameters belong with the subprogram definition (or the declaration, protocol). They give names to variables that the subprogram implementation can use to refer to values that the user specifies at the time that the subprogram is called. Those values (specified by the user at the time the subprogram is invoked) are called the arguments. The number, type and order of arguments "must" (well, almost "must" -- see below!) match the number, type and order of the parameters. In most cases, order is used to match the arguments to the parameters. The first parameter is matched to the first argument and the second parameter is matched to the second argument, and so on. Arguments that are matched with parameters in this way are known as _positional arguments_. Once the arguments are matched to the parameters, a confirmation is made that their types are compatible. Matching arguments to parameters by their position implies that there are the same number of arguments and parameters.
 
 So, why the caveat?
 
-Languages offer different mechanisms to make matching parameters with arguments possible. Some languages offer _default arguments_, which allow the caller to leave off an argument by specifying a parameter's value in the absence of a user's choice.
+Languages offer different mechanisms to make matching parameters with arguments possible. Some languages offer _default arguments_ for subprograms, which allow the caller to leave off an argument and accept the subprogram's implementer's choice of a default value.
 
 ```C++
-
 int get_random(int max_random = 500) {
     int actual_random{rng() % max_random};
     return actual_random;
@@ -38,7 +37,7 @@ int get_random(int max_random = 500) {
 
 is an example of a subprogram (what is called a function in C++) that has a default parameter. Even though the default value is written with the parameter, C++ actually calls such a thing a default argument. I know.
 
-With a default argument in C++, these two programs are equivalent:
+Because of the default argument in C++, these two programs perform the same calculations:
 
 ```C++
 int main() {
@@ -56,7 +55,7 @@ int main() {
 }
 ```
 
-Of course, if I (as the user) want a random number within a smaller range, then I can always do that:
+Of course, if I (as the user of the `random_number` subprogram) want a random number within a smaller range, then I can always do that:
 
 ```C++
 
@@ -85,6 +84,6 @@ Those three definitions specify the semantics of communication between caller an
 
 1. _Pass by value_: Used to implement in-mode parameters. A local variable (from the perspective of the subprogram implementation) with the name of the formal parameter is given _the value_ of the corresponding actual parameter. That value is usually obtained by copying the value of the argument into the memory associated with the parameter -- hence the name.
 2. _Pass by result_: Used to implement out-mode parameters. A local variable (from the perspective of the subprogram implementation) with the name of the formal parameter is available to the subprogram implementation. Upon termination of the subprogram's execution, the value of that local variable is copied to the space associated with the corresponding actual parameter.
-3. _Pass by reference_: Used to implement in-out-mode parameters. A local variable (from the perspective of the subprogram) with the name of the formal parameter contains an _access path_ (usually a pointer) to the argument. In the subprogram implementation, all accesses/updates to the variable are done through the access path. Those accesses/updates are simultaneously visible to the called and the caller.
+3. _Pass by reference_: Used to implement in-out-mode parameters. A local variable (from the perspective of the subprogram) with the name of the formal parameter contains an _access path_ (usually a pointer or a reference) to the argument. In the subprogram implementation, all accesses/updates to the variable are done through the access path. Those accesses/updates are simultaneously visible to the called and the caller.
 
-There are myriad ways that the choice of implementation methods for parameter passing can cause unexpected behavior. The most common issue that arises has to do with _aliasing_. When two (or more) names refer to the same variable, those names are said to be aliases. An access/update using the _different_ names changes the value of the _same_ variable. Obviously this can be surprising to the programmer who believes that an assignment statement giving a new value to the variable bound to two _different_ names is changing the value of two different variables. Aliasing is such a difficult problem to solve that some languages (C++) put the onus on the programmer to ensure that it never happens and make no guarantees about a program's behavior when aliasing is present.
+There are myriad ways that the choice of implementation methods for parameter passing can cause unexpected behavior. The most common issue that arises has to do with _aliasing_. When two (or more) names refer to the same variable, those names are said to be aliases. When there are two or more different names that refer to the same variable, either one can change its value. Obviously this can be surprising to the programmer who believes that an assignment statement giving a new value to the variable bound to two _different_ names is changing the value of two different variables. Aliasing is such a difficult problem to solve that some languages (C++) put the onus on the programmer to ensure that it never happens and make no guarantees about a program's behavior when aliasing is present.
