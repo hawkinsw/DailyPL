@@ -87,3 +87,7 @@ Those three definitions specify the semantics of communication between caller an
 3. _Pass by reference_: Used to implement in-out-mode parameters. A local variable (from the perspective of the subprogram) with the name of the formal parameter contains an _access path_ (usually a pointer or a reference) to the argument. In the subprogram implementation, all accesses/updates to the variable are done through the access path. Those accesses/updates are simultaneously visible to the called and the caller.
 
 There are myriad ways that the choice of implementation methods for parameter passing can cause unexpected behavior. The most common issue that arises has to do with _aliasing_. When two (or more) names refer to the same variable, those names are said to be aliases. When there are two or more different names that refer to the same variable, either one can change its value. Obviously this can be surprising to the programmer who believes that an assignment statement giving a new value to the variable bound to two _different_ names is changing the value of two different variables. Aliasing is such a difficult problem to solve that some languages (C++) put the onus on the programmer to ensure that it never happens and make no guarantees about a program's behavior when aliasing is present.
+
+
+add rsp, 0x8
+```
