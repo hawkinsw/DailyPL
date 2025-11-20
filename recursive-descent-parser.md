@@ -140,9 +140,12 @@ There is an algorithm for converting productions that are direct-left recursive 
 1.  For the rule that is direct-left recursive, $A$, rewrite all productions of $A$ as $A \rightarrow A\alpha_1 | A\alpha_2 | \ldots | A\alpha_n | \beta_1 | \ldots | \beta_n$ where all (non)terminals $\beta_1 \ldots \beta_n$ are not direct-left recursive.
 2.  Rewrite the production as
 
-$A \rightarrow \beta_{1}A' | \beta_{2}A' | \ldots | \beta_{n}A' \\
+$$
+\begin{matrix}
+A \rightarrow \beta_{1}A' | \beta_{2}A' | \ldots | \beta_{n}A' \\
 A' \rightarrow \alpha_{1}A' | \alpha_{2}A' | \ldots | \alpha_{n}A' | \varepsilon
-$
+\end{matrix}
+$$
 
 where $\varepsilon$ is the _erasure rule_ and matches an empty token.
 
@@ -157,15 +160,19 @@ $$
 $A$ is $Expr$, $\alpha_1$ is $Term$, $\beta_1$ is $Term$. Therefore,
 
 $$
+\begin{matrix}
 A \rightarrow \beta_{1}A' \\
 A' \rightarrow \alpha_{1}A' | \varepsilon
+\end{matrix}
 $$
 
 becomes
 
 $$
+\begin{matrix}
 Expr \rightarrow Term Expr' \\
 Expr' \rightarrow +TermExpr' | \varepsilon
+\end{matrix}
 $$
 
 No sweat! It's just moving pieces around on a chessboard!
@@ -175,11 +182,13 @@ No sweat! It's just moving pieces around on a chessboard!
 We can make those same manipulations for each of the direct left-recursive productions in the grammar in our working example and we arrive here:
 
 $$
+\begin{matrix}
 \mathit{Expr} \rightarrow \mathit{Term}\mathit{Expr'} \\
 \mathit{Expr'} \rightarrow + \mathit{Term}\mathit{Expr'} | \epsilon \\
 \mathit{Term} \rightarrow \mathit{Factor}\mathit{Term'} \\
 \mathit{Term'} \rightarrow * \mathit{Factor}\mathit{Term'} | \epsilon \\
 \mathit{Factor} \rightarrow ( \mathit{Expr} ) | \mathit{id}
+\end{matrix}
 $$
 
 Now that we have a non direct-left recursive grammar we can easily write a recursive-descent parser for the entire grammar. The source code is available [online](https://github.com/hawkinsw/cs3003/tree/main/recursive_descent) and I encourage you to download and play with it!
